@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FaceLogin | Reconocimiento facial</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="app-shell">
+
+        <!-- ENCABEZADO -->
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         aria-hidden="true">
+                        <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+                        <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                        <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+                        <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                        <circle cx="12" cy="9" r="3"/>
+                        <path d="M6.5 18a5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </div>
+
+                <div class="brand-copy">
+                    <h1>FaceLogin</h1>
+                    <p>Identificación inteligente</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="model-control">
+                    <label for="modelSelect">Modelo activo</label>
+
+                    <select id="modelSelect" class="form-select">
+                        {% for model in models %}
+                            <option value="{{ model.id }}">
+                                {{ model.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <a href="{{ url_for('admin_login') }}"
+                   class="admin-link">
+                    <span class="admin-symbol" aria-hidden="true">⚙</span>
+                    <span>Administrador</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <section class="workspace">
+
+            <!-- CÁMARA -->
+            <section class="camera-panel">
+                <div class="section-heading">
+                    <div>
+                        <h2>Reconocimiento facial</h2>
+                        <p>Ubica tu rostro frente a la cámara.</p>
+                    </div>
+
+                    <span class="camera-badge">
+                        <span class="status-dot"></span>
+                        Cámara
+                    </span>
+                </div>
+
+              
+<div class="camera-container">
+    <video id="video" autoplay playsinline muted></video>
+
+   
+
+    <div class="camera-placeholder" id="cameraPlaceholder">
+        <div class="placeholder-icon">◎</div>
+        <p>La cámara aparecerá aquí</p>
+        <span>Presiona iniciar validación</span>
+    </div>
+</div>
+
+
+                <div class="camera-tip">
+                    <span aria-hidden="true">ⓘ</span>
+                    Mantén el rostro visible y procura tener buena iluminación.
+                </div>
+            </section>
+
+            <!-- VALIDACIÓN Y RESULTADO -->
+            <section class="validation-panel">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Validación de identidad</h2>
+                        <p>Sigue las indicaciones en pantalla.</p>
+                    </div>
+                </div>
+
+                <div class="instruction" aria-live="polite">
+                    <div class="instruction-icon">✦</div>
+
+                    <div class="instruction-copy">
+                        <h3 id="instruction">Presione iniciar</h3>
+                        <p id="counter">Preparado para iniciar</p>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button id="startButton" class="btn btn-primary">
+                        <span aria-hidden="true">▶</span>
+                        Iniciar validación
+                    </button>
+
+                    <button id="stopButton" class="btn btn-stop">
+                        Detener
+                    </button>
+                </div>
+
+                <div id="result" class="result" aria-live="polite">
+                    <div class="result-icon" aria-hidden="true">✓</div>
+
+                    <div class="result-copy">
+                        <span class="result-label">RESULTADO</span>
+                        <h2 id="message">Esperando validación</h2>
+                        <p id="confidence"></p>
+                    </div>
+                </div>
+
+                <div class="privacy-note">
+                    <span aria-hidden="true">🔒</span>
+                    La validación se realiza con el modelo seleccionado.
+                </div>
+
+            </section>
+        </section>
+
+        <footer class="app-footer">
+            <span>FaceLogin</span>
+            <span>Sistema de reconocimiento facial</span>
+        </footer>
+
+        <canvas id="canvas" width="224" height="224"></canvas>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+
+    <script>
+        const videoElement = document.getElementById("video");
+        const placeholder = document.getElementById("cameraPlaceholder");
+
+        videoElement.addEventListener("playing", () => {
+            placeholder.classList.add("hidden");
+        });
+
+        videoElement.addEventListener("emptied", () => {
+            placeholder.classList.remove("hidden");
+        });
+    </script>
+</body>
+</html>
